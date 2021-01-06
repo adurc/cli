@@ -32,8 +32,8 @@ program
             } catch (e) {
                 if (controlledError) {
                     const content = generateTypes(adurcContext);
-                    console.log('writing content: ' + content + ' into, ' + output);
                     fs.writeFileSync(process.cwd() + '/' + output, content);
+                    console.log('generated types and saved output into "%s"', output);
                 } else {
                     console.log('An error ocurred building adurc instance: ' + e.toString());
                 }
