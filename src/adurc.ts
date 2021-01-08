@@ -3,9 +3,9 @@
 import fs from 'fs';
 import { AdurcBuilder } from '@adurc/core';
 import { BuilderStage } from '@adurc/core/dist/interfaces/builder.generator';
-import { AdurcContextBuilder } from '@adurc/core/dist/interfaces/context';
 import { Command } from 'commander';
 import { generateTypes } from './generate-types';
+import { AdurcSchemaBuilder } from '@adurc/core/dist/interfaces/context';
 
 const program = new Command();
 program.version('0.1.1');
@@ -18,7 +18,7 @@ program
         const builder: AdurcBuilder = require(process.cwd() + '/' + path).default;
         if (builder && 'build' in builder) {
             let controlledError = false;
-            let adurcContext: AdurcContextBuilder;
+            let adurcContext: AdurcSchemaBuilder;
             builder.use(function* (context) {
                 adurcContext = context;
                 yield BuilderStage.OnInit;

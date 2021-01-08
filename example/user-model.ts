@@ -1,7 +1,6 @@
-import { AdurcModel } from '@adurc/core/dist/interfaces/model';
+import { AdurcModelBuilder } from '@adurc/core/dist/interfaces/context';
 
-export const UserAdurcModel: AdurcModel = {
-    accessorName: 'user',
+export const UserAdurcModel: AdurcModelBuilder = {
     source: 'adurc',
     name: 'User',
     directives: [],

@@ -1,5 +1,5 @@
 import { AdurcPrimitiveDefinition } from '@adurc/core/dist/interfaces/common';
-import { AdurcContextBuilder } from '@adurc/core/dist/interfaces/context';
+import { AdurcSchemaBuilder } from '@adurc/core/dist/interfaces/context';
 import pascalcase from 'pascalcase';
 import { Project } from 'ts-morph';
 
@@ -25,16 +25,16 @@ function adurcFieldTypeToTsMorph(type: AdurcPrimitiveDefinition) {
     }
 }
 
-export function generateTypes(context: AdurcContextBuilder): string {
+export function generateTypes(schema: AdurcSchemaBuilder): string {
     const project = new Project();
     const file = project.createSourceFile('types.ts');
 
     const modelNames: Record<string, string> = {};
 
-    context.models
+    schema.models
         .forEach(x => modelNames[x.name] = 'I' + pascalcase(x.name) + 'Model');
 
-    for (const model of context.models) {
+    for (const model of schema.models) {
         const astModel = file.addInterface({
             name: modelNames[model.name],
             isExported: true,
@@ -42,7 +42,7 @@ export function generateTypes(context: AdurcContextBuilder): string {
 
         for (const field of model.fields) {
             astModel.addProperty({
-                name: field.name,
+                name: field.accessorName,
                 type: ((typeof field.type === 'string' ? adurcFieldTypeToTsMorph(field.type) : modelNames[field.type.model]) + (field.collection ? '[]' : '')),
                 hasQuestionToken: field.nonNull !== true,
             });
@@ -51,7 +51,7 @@ export function generateTypes(context: AdurcContextBuilder): string {
 
     const astAdurcModels = file.addInterface({ name: 'AdurcModels', isExported: true });
 
-    for (const model of context.models) {
+    for (const model of schema.models) {
         astAdurcModels.addProperty({
             name: model.accessorName,
             type: modelNames[model.name],
